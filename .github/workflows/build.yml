@@ -8,19 +8,13 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
-        with:
-          path: source
-      - run: |
-          mkdir --parents output
       - name: Generate Swagger UI
         uses: Legion2/swagger-ui-action@v1
         with:
-          output: output/ui
-          spec-file: "${{ github.workspace }}/source/swagger/slate-creation-from-event.yml"
-      - run: |
-          cp --recursive source/public/. output
+          output: docs
+          spec-file: "${{ github.workspace }}/swagger/slate-creation-from-event.yml"
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
             github_token: ${{ github.token }}
-            publish_dir: output
+            publish_dir: docs
