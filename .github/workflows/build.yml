@@ -12,7 +12,7 @@ jobs:
         uses: Legion2/swagger-ui-action@v1
         with:
           output: docs
-          spec-file: "${{ github.workspace }}/swagger/slate-creation-from-event.yml"
+          swagger-config-file: "${{ github.workspace }}/swagger/swagger-config.json"
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
