@@ -1,0 +1,415 @@
+swagger: "2.0"
+info:
+  description: ""
+  version: "1.1.3"
+  title: "Slate creation from external event Bot"
+host: "bots.airslate.com"
+basePath: "/webhook-bot/"
+tags:
+  - name: "Subscription"
+    description: "Manage subscriptions"
+  - name: "Statistic"
+    description: "View slate-addon statistic"
+schemes:
+  - "https"
+paths:
+  /v2/subscription:
+    post:
+      tags:
+        - "Subscription"
+      summary: "Add new subscription"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Add new subscription"
+          required: true
+          schema:
+            $ref: "#/definitions/subscription"
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: "#/definitions/subscription_data"
+        "400":
+          description: "Invalid input"
+      security:
+        - token: []
+    get:
+      tags:
+        - "Subscription"
+      summary: "View subscriptions"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: "#/definitions/subscriptions"
+      security:
+        - token: []
+  /v2/subscription/{subscriptionId}:
+    delete:
+      tags:
+        - "Subscription"
+      summary: "Delete subscription by id"
+      description: ""
+      produces:
+        - "application/json"
+      parameters:
+        - name: "subscriptionId"
+          in: "path"
+          description: "ID of subscription"
+          required: true
+          type: "string"
+      responses:
+        "204":
+          description: "The server successfully processed the request, but is not returning any content."
+        "400":
+          description: "Entity id is incorrect"
+      security:
+        - token: []
+  /v2/stats:
+    get:
+      tags:
+        - "Statistic"
+      summary: "View slate addon statistics"
+      description: ""
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: "#/definitions/statistics"
+      security:
+        - token: []
+  /v2/fetch:
+    get:
+      tags:
+        - "Fetch"
+      summary: "Fetch"
+      description: ""
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: "#/definitions/fetch"
+      security:
+        - token: []
+securityDefinitions:
+  token:
+    type: "apiKey"
+    in: "header"
+    name: "Authorization"
+definitions:
+  subscription:
+    type: "object"
+    required:
+      - "type"
+      - "attributes"
+    properties:
+      data:
+        type: "object"
+        properties:
+          type:
+            type: "string"
+            example: "subscriptions"
+          attributes:
+            type: "object"
+            properties:
+              callback_url:
+                type: "string"
+                example: "https://example.com"
+  subscription_data:
+    type: "object"
+    properties:
+      data:
+        type: "object"
+        properties:
+          type:
+            type: "string"
+            example: "subscriptions"
+          id:
+            type: "string"
+            example: "00000000-0000-0000-00000000"
+          attributes:
+            type: "object"
+            properties:
+              callback_url:
+                type: "string"
+                example: "https://example.com"
+          relationships:
+            type: "object"
+            properties:
+              slates:
+                type: "object"
+                properties:
+                  data:
+                    type: "object"
+                    properties:
+                      type:
+                        type: "string"
+                        example: "slates"
+                      id:
+                        type: "string"
+                        example: "00000000-0000-0000-00000000"
+              slate_addons:
+                type: "object"
+                properties:
+                  data:
+                    type: "object"
+                    properties:
+                      type:
+                        type: "string"
+                        example: "slate_addons"
+                      id:
+                        type: "string"
+                        example: "00000000-0000-0000-00000000"
+  subscriptions:
+    type: "object"
+    properties:
+      data:
+        type: "array"
+        items:
+          $ref: "#/definitions/subscription_data"
+  statistic:
+    type: "object"
+    properties:
+      type:
+        type: "string"
+        example: "statistics"
+      id:
+        type: "string"
+        example: "00000000-0000-0000-00000000"
+      attributes:
+        type: "object"
+        properties:
+          webhooks:
+            type: "array"
+            items:
+              $ref: "#/definitions/webhook"
+      relationships:
+        type: "object"
+        properties:
+          packets:
+            type: "object"
+            properties:
+              data:
+                type: "object"
+                properties:
+                  type:
+                    type: "string"
+                    example: "packets"
+                  id:
+                    type: "string"
+                    example: "00000000-0000-0000-00000000"
+          packet_revisions:
+            type: "object"
+            properties:
+              data:
+                type: "object"
+                properties:
+                  type:
+                    type: "string"
+                    example: "packet_revisions"
+                  id:
+                    type: "string"
+                    example: "00000000-0000-0000-00000000"
+  statistics:
+    type: "object"
+    properties:
+      data:
+        type: "array"
+        items:
+          $ref: "#/definitions/statistic"
+  webhook:
+    type: "object"
+    properties:
+      subscription_id:
+        type: "integer"
+        example: "100"
+      notified_at:
+        type: "integer"
+        example: "1635270482"
+      status:
+        type: "string"
+        example: "success"
+  document:
+    type: "object"
+    properties:
+      type:
+        type: "string"
+        enum:
+          - "documents"
+      id:
+        type: "string"
+        example: "00000000-0000-0000-00000000"
+      attributes:
+        type: "object"
+        properties:
+          name:
+            type: "string"
+            example: "document.pdf"
+          status:
+            type: "string"
+            enum: ['DRAFT', 'FINISHED']
+            example: DRAFT
+          type:
+            type: "string"
+            enum: [PDF, DOC_CREATOR, HTM, PAYMENT_FORM, HTML_FORMS, AUTH_FORM, ATTACHMENT_FORM, DOC_GENERATION]
+          editor_type:
+            type: "string"
+            enum: [PDF, DOC_CREATOR, PAYMENT_FORM, HTML_FORMS, AUTH_FOR, ATTACHMENT_FORM, DOC_GENERATION, null]
+          version:
+            type: "integer"
+            example: 1
+          is_filled:
+            type: "boolean"
+            example: true
+          is_hidden:
+            type: "boolean"
+            example: false
+          content_version:
+            type: "integer"
+            example: 1
+          processing_status:
+            type: "string"
+            enum: [NEW, PROGRESS, COMPLETED, FAILED, DELETED, WAIT_PDF, PROTECTED]
+          properties:
+            type: "array"
+            items:
+              type: "object"
+          included:
+            type: array
+            items:
+              $ref: "#/definitions/document-field"
+      meta:
+        type: "object"
+        properties:
+          num_pages:
+            type: "integer"
+            example: 1
+          pdf_file_url:
+            type: "string"
+            example: null
+          num_visible_pages:
+            type: "integer"
+            example: 0
+          fillable_fields_count:
+            type: "integer"
+            example: 3
+  document-field:
+    type: "object"
+    properties:
+      data:
+        type: "object"
+        properties:
+          type:
+            type: "string"
+            enum:
+              - "dictionary"
+          id:
+            type: "string"
+            example: "00000000-0000-0000-00000000"
+          attributes:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+                example: "document.pdf"
+              field_type:
+                type: "string"
+                enum: ["text", "number", "date", "signature"]
+                example: "text"
+              value:
+                type: "string"
+                example: null
+              dropdown_options:
+                type: "string"
+                example: null
+              radio_buttons_group:
+                type: "string"
+                example: null
+              format:
+                type: "string"
+                example: "MM/dd/yyyy"
+              editors_config_enabled:
+                type: "boolean"
+                example: false
+              role_label:
+                type: "string"
+                example: null
+              roleable:
+                type: "boolean"
+                example: true
+              hidden:
+                type: "boolean"
+                example: false
+              required:
+                type: "boolean"
+                example: false
+              number_value:
+                type: "number"
+                example: true
+              triggers:
+                type: "string"
+                example: null
+              comparable:
+                type: "boolean"
+                example: false
+              timestamp_value:
+                type: "integer"
+                example: 000000000
+              restrict_sub_types:
+                type: "string"
+                example: null
+              single_use:
+                type: "boolean"
+                example: false
+              readonly:
+                type: "boolean"
+                example: false
+              data_writing_allowed:
+                type: "boolean"
+                example: true
+              group:
+                type: "string"
+                example: null
+  fetch:
+    type: "object"
+    properties:
+      data:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            type:
+              type: "string"
+              enum:
+                - "notify_attempts"
+            id:
+              type: "string"
+              example: "00000000-0000-0000-00000000"
+            attributes:
+              type: "object"
+              properties:
+                payload:
+                  type: "object"
+                  properties:
+                    slate_id:
+                      type: "string"
+                      example: "00000000-0000-0000-00000000"
+                    documents:
+                      type: "array"
+                      items:
+                        $ref: "#/definitions/document"
