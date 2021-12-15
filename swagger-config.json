@@ -1,1 +1,17 @@
-{"url":"slate-creation-from-event.yml","deepLinking":true}
+{
+  "urls": [
+    {
+      "url": "swagger/slate-creation-from-event.yml",
+      "name": "Slate creation from external event Bot"
+    },
+    {
+      "url": "swagger/webhook-postfinish.yml",
+      "name": "Send Webhook upon Slate Completion Bot"
+    },
+    {
+      "url": "swagger/webhook-prefill.yml",
+      "name": "Slate creation from external event Bot"
+    }
+  ],
+  "deepLinking":true
+}
